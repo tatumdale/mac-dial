@@ -3,63 +3,81 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C882FA1A26F1430C00595EE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C882FA1926F1430C00595EE1 /* AppDelegate.swift */; };
-		C882FA1E26F1430D00595EE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C882FA1D26F1430D00595EE1 /* Assets.xcassets */; };
-		C882FA2126F1430D00595EE1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C882FA2026F1430D00595EE1 /* Preview Assets.xcassets */; };
-		C882FA2426F1430D00595EE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C882FA2226F1430D00595EE1 /* Main.storyboard */; };
-		C882FA2D26F143E300595EE1 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C882FA2C26F143E300595EE1 /* StatusBarController.swift */; };
-		C89D24292703BA5E00B1A458 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89D24282703BA5E00B1A458 /* Controller.swift */; };
-		C89D242B2703CF4500B1A458 /* ScrollController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89D242A2703CF4500B1A458 /* ScrollController.swift */; };
-		C89D242D2704870C00B1A458 /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89D242C2704870C00B1A458 /* PlaybackController.swift */; };
-		C89F31592701090400A8B365 /* Dial.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89F31582701090400A8B365 /* Dial.swift */; };
-		C89F315B2701266400A8B365 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C89F315A2701266400A8B365 /* CoreFoundation.framework */; };
-		C89F315D2701266A00A8B365 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C89F315C2701266A00A8B365 /* IOKit.framework */; };
-		C89F315F270126E100A8B365 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C89F315E270126E100A8B365 /* AppKit.framework */; };
+		6519213B2EC578EF000A91B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 651921342EC578EF000A91B4 /* Assets.xcassets */; };
+		6519213E2EC578EF000A91B4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 651921392EC578EF000A91B4 /* Main.storyboard */; };
+		65478E182EEC0C3000E18598 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 65478E172EEC0C3000E18598 /* AppIcon.icon */; };
+		65478E1C2EEC185100E18598 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 65478E1B2EEC185100E18598 /* Localizable.xcstrings */; };
+		655C97D62F6FAB4200DE0652 /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 655C97D52F6FAB4200DE0652 /* AXSwift */; };
+		656BAEF02EE9574D00714682 /* OSD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65993F162EC81ECD000C12B7 /* OSD.framework */; };
+		656BAEF12EE9574F00714682 /* MediaRemote.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 652BA41D2EC6AA10004D6964 /* MediaRemote.framework */; };
+		656BAEF22EE9575000714682 /* CoreBrightness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6577212D2EC0643100C0C55F /* CoreBrightness.framework */; };
+		656BAEF32EE9575200714682 /* DisplayServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 657721232EC0542C00C0C55F /* DisplayServices.framework */; };
+		658C6B7B2F883CA900C543BF /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 658C6B7A2F883CA900C543BF /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2DBA1824516DE7C2EA24F590 /* HIDReport.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = HIDReport.md; sourceTree = "<group>"; };
+		651921342EC578EF000A91B4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		651921352EC578EF000A91B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		651921382EC578EF000A91B4 /* MacDial.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacDial.entitlements; sourceTree = "<group>"; };
+		651921392EC578EF000A91B4 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		652BA41D2EC6AA10004D6964 /* MediaRemote.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaRemote.framework; path = ../../../../../System/Library/PrivateFrameworks/MediaRemote.framework; sourceTree = "<group>"; };
+		65478E172EEC0C3000E18598 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		65478E1B2EEC185100E18598 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		657721232EC0542C00C0C55F /* DisplayServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DisplayServices.framework; path = ../../../../../System/Library/PrivateFrameworks/DisplayServices.framework; sourceTree = "<group>"; };
+		6577212D2EC0643100C0C55F /* CoreBrightness.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBrightness.framework; path = ../../../../../System/Library/PrivateFrameworks/CoreBrightness.framework; sourceTree = "<group>"; };
+		65993F162EC81ECD000C12B7 /* OSD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSD.framework; path = ../../../../../System/Library/PrivateFrameworks/OSD.framework; sourceTree = "<group>"; };
+		65CD60002F886CA600BA8F3B /* update_appcast.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = update_appcast.sh; sourceTree = "<group>"; };
 		C882FA1626F1430C00595EE1 /* MacDial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacDial.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C882FA1926F1430C00595EE1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C882FA1D26F1430D00595EE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C882FA2026F1430D00595EE1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		C882FA2326F1430D00595EE1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C882FA2526F1430D00595EE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C882FA2626F1430D00595EE1 /* MacDial.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacDial.entitlements; sourceTree = "<group>"; };
-		C882FA2C26F143E300595EE1 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
-		C89D24282703BA5E00B1A458 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
-		C89D242A2703CF4500B1A458 /* ScrollController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollController.swift; sourceTree = "<group>"; };
-		C89D242C2704870C00B1A458 /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackController.swift; sourceTree = "<group>"; };
-		C89F3155270106E400A8B365 /* MacDial-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacDial-Bridging-Header.h"; sourceTree = "<group>"; };
-		C89F31582701090400A8B365 /* Dial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dial.swift; sourceTree = "<group>"; };
-		C89F315A2701266400A8B365 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		C89F315C2701266A00A8B365 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		C89F315E270126E100A8B365 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		65F4783B2ED401E400B29607 /* Code */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Code; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C882FA1326F1430C00595EE1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C89F315F270126E100A8B365 /* AppKit.framework in Frameworks */,
-				C89F315B2701266400A8B365 /* CoreFoundation.framework in Frameworks */,
-				C89F315D2701266A00A8B365 /* IOKit.framework in Frameworks */,
+				656BAEF02EE9574D00714682 /* OSD.framework in Frameworks */,
+				656BAEF22EE9575000714682 /* CoreBrightness.framework in Frameworks */,
+				656BAEF12EE9574F00714682 /* MediaRemote.framework in Frameworks */,
+				656BAEF32EE9575200714682 /* DisplayServices.framework in Frameworks */,
+				658C6B7B2F883CA900C543BF /* Sparkle in Frameworks */,
+				655C97D62F6FAB4200DE0652 /* AXSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6519213A2EC578EF000A91B4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				65478E172EEC0C3000E18598 /* AppIcon.icon */,
+				651921342EC578EF000A91B4 /* Assets.xcassets */,
+				651921352EC578EF000A91B4 /* Info.plist */,
+				65478E1B2EEC185100E18598 /* Localizable.xcstrings */,
+				651921382EC578EF000A91B4 /* MacDial.entitlements */,
+				651921392EC578EF000A91B4 /* Main.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		C882FA0D26F1430C00595EE1 = {
 			isa = PBXGroup;
 			children = (
-				C882FA1826F1430C00595EE1 /* MacDial */,
+				65F4783B2ED401E400B29607 /* Code */,
+				6519213A2EC578EF000A91B4 /* Resources */,
 				C882FA1726F1430C00595EE1 /* Products */,
 				C89F31562701079000A8B365 /* Frameworks */,
+				65CD60002F886CA600BA8F3B /* update_appcast.sh */,
+				2DBA1824516DE7C2EA24F590 /* HIDReport.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,39 +89,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C882FA1826F1430C00595EE1 /* MacDial */ = {
-			isa = PBXGroup;
-			children = (
-				C882FA1926F1430C00595EE1 /* AppDelegate.swift */,
-				C89F3155270106E400A8B365 /* MacDial-Bridging-Header.h */,
-				C882FA2C26F143E300595EE1 /* StatusBarController.swift */,
-				C89D24282703BA5E00B1A458 /* Controller.swift */,
-				C882FA1D26F1430D00595EE1 /* Assets.xcassets */,
-				C882FA2226F1430D00595EE1 /* Main.storyboard */,
-				C882FA2526F1430D00595EE1 /* Info.plist */,
-				C882FA2626F1430D00595EE1 /* MacDial.entitlements */,
-				C882FA1F26F1430D00595EE1 /* Preview Content */,
-				C89F31582701090400A8B365 /* Dial.swift */,
-				C89D242A2703CF4500B1A458 /* ScrollController.swift */,
-				C89D242C2704870C00B1A458 /* PlaybackController.swift */,
-			);
-			path = MacDial;
-			sourceTree = "<group>";
-		};
-		C882FA1F26F1430D00595EE1 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				C882FA2026F1430D00595EE1 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
 		C89F31562701079000A8B365 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C89F315E270126E100A8B365 /* AppKit.framework */,
-				C89F315C2701266A00A8B365 /* IOKit.framework */,
-				C89F315A2701266400A8B365 /* CoreFoundation.framework */,
+				65993F162EC81ECD000C12B7 /* OSD.framework */,
+				652BA41D2EC6AA10004D6964 /* MediaRemote.framework */,
+				6577212D2EC0643100C0C55F /* CoreBrightness.framework */,
+				657721232EC0542C00C0C55F /* DisplayServices.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -118,10 +110,14 @@
 				C882FA1226F1430C00595EE1 /* Sources */,
 				C882FA1326F1430C00595EE1 /* Frameworks */,
 				C882FA1426F1430C00595EE1 /* Resources */,
+				658C6B7C2F883D0E00C543BF /* Remove Unneeded Sparkle XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				65F4783B2ED401E400B29607 /* Code */,
 			);
 			name = MacDial;
 			productName = MacDial;
@@ -134,8 +130,9 @@
 		C882FA0E26F1430C00595EE1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					C882FA1526F1430C00595EE1 = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -151,6 +148,10 @@
 				Base,
 			);
 			mainGroup = C882FA0D26F1430C00595EE1;
+			packageReferences = (
+				655C97D42F6FAB4200DE0652 /* XCRemoteSwiftPackageReference "AXSwift" */,
+				658C6B792F883CA900C543BF /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			productRefGroup = C882FA1726F1430C00595EE1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -165,46 +166,54 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C882FA2426F1430D00595EE1 /* Main.storyboard in Resources */,
-				C882FA2126F1430D00595EE1 /* Preview Assets.xcassets in Resources */,
-				C882FA1E26F1430D00595EE1 /* Assets.xcassets in Resources */,
+				6519213B2EC578EF000A91B4 /* Assets.xcassets in Resources */,
+				6519213E2EC578EF000A91B4 /* Main.storyboard in Resources */,
+				65478E182EEC0C3000E18598 /* AppIcon.icon in Resources */,
+				65478E1C2EEC185100E18598 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		658C6B7C2F883D0E00C543BF /* Remove Unneeded Sparkle XPC Services */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Remove Unneeded Sparkle XPC Services";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/bash\n\n# Only run for install / archive builds\nif [ \"$ACTION\" != \"install\" ]; then\n    exit 0\nfi\n\nAPP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\nSPARKLE_FRAMEWORK=\"${APP_PATH}/Contents/Frameworks/Sparkle.framework\"\n\n# Paths to remove if present\nPATHS_TO_REMOVE=(\n    # Uncomment these two lines if you don't need any XPC Services\n    \"${SPARKLE_FRAMEWORK}/Versions/B/XPCServices\"\n    \"${SPARKLE_FRAMEWORK}/XPCServices\"\n)\n\nfor p in \"${PATHS_TO_REMOVE[@]}\"; do\n    if [ -e \"$p\" ] || [ -L \"$p\" ]; then\n        rm -rf \"$p\"\n    fi\ndone\n\n# Re-sign to fix code signing signature\ncodesign --force --sign \"$EXPANDED_CODE_SIGN_IDENTITY\" --preserve-metadata \"$SPARKLE_FRAMEWORK\"\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C882FA1226F1430C00595EE1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C882FA2D26F143E300595EE1 /* StatusBarController.swift in Sources */,
-				C882FA1A26F1430C00595EE1 /* AppDelegate.swift in Sources */,
-				C89D24292703BA5E00B1A458 /* Controller.swift in Sources */,
-				C89D242D2704870C00B1A458 /* PlaybackController.swift in Sources */,
-				C89F31592701090400A8B365 /* Dial.swift in Sources */,
-				C89D242B2703CF4500B1A458 /* ScrollController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		C882FA2226F1430D00595EE1 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C882FA2326F1430D00595EE1 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		C882FA2726F1430D00595EE1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -235,9 +244,12 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9BA6D47628;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -252,12 +264,15 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -266,6 +281,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -296,9 +312,12 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9BA6D47628;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -307,11 +326,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
@@ -321,23 +343,45 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MacDial/MacDial.entitlements;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				AUTOMATION_APPLE_EVENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = Resources/MacDial.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"MacDial/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 10;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/lib/hidapi/hidapi";
-				INFOPLIST_FILE = MacDial/Info.plist;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacDial;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/lib/hidapi/build/src/mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				OTHER_LDFLAGS = "-lhidapi";
-				PRODUCT_BUNDLE_IDENTIFIER = com.andreasjhkarlsson.MacDial;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 2.0.0;
+				OTHER_LDFLAGS = "-F$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.socuul.macdial;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MacDial/MacDial-Bridging-Header.h";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Code/$(SWIFT_MODULE_NAME)-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -347,24 +391,45 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MacDial/MacDial.entitlements;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				AUTOMATION_APPLE_EVENTS = YES;
+				CODE_SIGN_ENTITLEMENTS = Resources/MacDial.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"MacDial/Preview Content\"";
+				CURRENT_PROJECT_VERSION = 10;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/lib/hidapi/hidapi";
-				INFOPLIST_FILE = MacDial/Info.plist;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MacDial;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/lib/hidapi/build/src/mac";
-				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(SRCROOT)/lib/hidapi/build_x86/src/mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				OTHER_LDFLAGS = "-lhidapi";
-				PRODUCT_BUNDLE_IDENTIFIER = com.andreasjhkarlsson.MacDial;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 2.0.0;
+				OTHER_LDFLAGS = "-F$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.socuul.macdial;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MacDial/MacDial-Bridging-Header.h";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Code/$(SWIFT_MODULE_NAME)-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -391,6 +456,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		655C97D42F6FAB4200DE0652 /* XCRemoteSwiftPackageReference "AXSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tmandry/AXSwift";
+			requirement = {
+				kind = exactVersion;
+				version = 0.3.2;
+			};
+		};
+		658C6B792F883CA900C543BF /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		655C97D52F6FAB4200DE0652 /* AXSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 655C97D42F6FAB4200DE0652 /* XCRemoteSwiftPackageReference "AXSwift" */;
+			productName = AXSwift;
+		};
+		658C6B7A2F883CA900C543BF /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 658C6B792F883CA900C543BF /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C882FA0E26F1430C00595EE1 /* Project object */;
 }

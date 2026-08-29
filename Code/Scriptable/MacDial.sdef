@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+
+<dictionary title="MacDial Terminology" xmlns:xi="http://www.w3.org/2003/XInclude">
+    
+    <suite name="MacDial Suite" code="MDst" description="Commands for MacDial.">
+
+        <enumeration name="rotation mode" code="RMOD" description="The mode for dial rotation">
+            <enumerator name="volume"             code="RMvo" description="Volume"/>
+            <enumerator name="brightness"         code="RMbr" description="Brightness"/>
+            <enumerator name="keyboard"           code="RMkb" description="Keyboard"/>
+            <enumerator name="scrolling"          code="RMsr" description="Scrolling"/>
+            <enumerator name="brush size"          code="RMbs" description="Brush Size"/>
+            <enumerator name="left right"         code="RMlr" description="Keyboard (Left/Right)"/>
+            <enumerator name="up down"            code="RMud" description="Keyboard (Up/Down)"/>
+            <enumerator name="plus minus"         code="RMpm" description="Keyboard (Plus/Minus)"/>
+            <enumerator name="apple music volume" code="RMam" description="Apple Music Volume"/>
+            <enumerator name="spotify volume"     code="RMsp" description="Spotify Volume"/>
+            <enumerator name="vlc volume"         code="RMvl" description="VLC Volume"/>
+            <enumerator name="none"               code="MDno" description="None"/>
+        </enumeration>
+
+        <enumeration name="button mode"  code="BMOD" description="The mode for dial press">
+            <enumerator name="playback"   code="BMpl" description="Playback"/>
+            <enumerator name="mute"       code="BMmu" description="Mute"/>
+            <enumerator name="left click" code="BMlc" description="Left Mouse Click"/>
+            <enumerator name="none"       code="MDno" description="None"/>
+        </enumeration>
+        
+        <enumeration name="multi mode"  code="MMOD" description="The modes for all rotations and presses">
+            <enumerator name="color picker"  code="MMcp" description="Color Picker"/>
+            <enumerator name="none"          code="MDno" description="None"/>
+        </enumeration>
+
+        <enumeration name="wheel sensitivity" code="WSNT" description="The sensitivity of the dial rotation">
+            <enumerator name="low"    code="WSlo" description="Low"/>
+            <enumerator name="medium" code="WSmd" description="Medium"/>
+            <enumerator name="high"   code="WShi" description="High"/>
+            <enumerator name="custom" code="WScu" description="Custom"/>
+        </enumeration>
+
+        <enumeration name="wheel direction" code="WDIR" description="The direction of the wheel rotation">
+            <enumerator name="clockwise"        code="WDcl" description="Clockwise"/>
+            <enumerator name="counterclockwise" code="WDco" description="Counterclockwise"/>
+        </enumeration>
+
+        <enumeration name="status icon" code="SICO" description="The status bar icon mode">
+            <enumerator name="default"       code="SIde" description="Default"/>
+            <enumerator name="rotation mode" code="SIrm" description="Rotation Mode"/>
+            <enumerator name="button mode"   code="SIbm" description="Button Mode"/>
+            <enumerator name="multi mode"   code="SImm" description="Multi Mode"/>
+        </enumeration>
+        
+        <!-- ========================================================================================= -->
+        <!-- COMMANDS -->
+        <!-- ========================================================================================= -->
+        
+        <command name="set rotation mode" code="MDsetrtm" description="Sets which mode is used for dial rotation.">
+            <direct-parameter name="" type="rotation mode" optional="no" description="the dial rotation mode">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setRotationMode"/>
+        </command>
+
+        <command name="set button mode" code="MDsetbtm" description="Sets which mode is used for dial press.">
+            <direct-parameter name="" type="button mode" optional="no" description="the dial button mode">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setButtonMode"/>
+        </command>
+        
+        <command name="set multi mode" code="MDsetmlm" description="Sets which modes are used for all dial rotations and presses.">
+            <direct-parameter name="" type="multi mode" optional="no" description="the dial multi mode">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setMultiMode"/>
+        </command>
+
+        <command name="set key scroll modifiers" code="MDsetksm" description="Sets which modifiers are pressed for key/scroll rotation modes.">
+            <parameter name="shift" code="MDKs" type="boolean" optional="no" description="Shift (⇧)">
+            </parameter>
+            <parameter name="command" code="MDKm" type="boolean" optional="no" description="Command (⌘)">
+            </parameter>
+            <parameter name="option" code="MDKo" type="boolean" optional="no" description="Option/alt (⌥)">
+            </parameter>
+            <parameter name="control" code="MDKc" type="boolean" optional="no" description="Control (⌃)">
+            </parameter>
+            <cocoa class="MacDial.scriptable_setKeyScrollModifiers"/>
+        </command>
+
+        <command name="set wheel sensitivity" code="MDsetwhs" description="Sets the sensitivity of the dial rotation.">
+            <direct-parameter name="" type="wheel sensitivity" optional="no" description="the dial rotation sensitivity">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setWheelSensitivity"/>
+        </command>
+
+        <command name="set custom sensitivity" code="MDsetcus" description="Sets the custom sensitivity level for dial rotation.">
+            <direct-parameter name="" type="integer" optional="no" description="the custom sensitivity level">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setCustomSensitivity"/>
+        </command>
+
+        <command name="set wheel direction" code="MDsetwhd" description="Sets the direction of the wheel rotation.">
+            <direct-parameter name="" type="wheel direction" optional="no" description="the wheel rotation direction">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setWheelDirection"/>
+        </command>
+
+        <command name="set status icon" code="MDsetsbi" description="Sets the icon mode of the menu bar extra.">
+            <direct-parameter name="" type="status icon" optional="no">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setStatusIcon"/>
+        </command>
+
+        <command name="set haptics" code="MDsethap" description="Sets whether rotation haptics are enabled.">
+            <direct-parameter name="" type="boolean" optional="no">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setHaptics"/>
+        </command>
+        
+        <command name="set keep dial awake" code="MDkawake" description="Sets whether the dial is prevented from automatically sleeping.">
+            <direct-parameter name="" type="boolean" optional="no">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setKeepDialAwake"/>
+        </command>
+
+        <command name="set show osd" code="MDsetosd" description="Sets whether changes are displayed on the system OSD.">
+            <direct-parameter name="" type="boolean" optional="no">
+            </direct-parameter>
+            <cocoa class="MacDial.scriptable_setShowOsd"/>
+        </command>
+        
+    </suite>
+    
+</dictionary>
