@@ -93,6 +93,14 @@ class AppController: NSObject, NSMenuDelegate {
     
     override init() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem.isVisible = true
+        if let button = statusItem.button {
+            button.image = NSImage(named: "menuicon-dial")
+            button.image?.isTemplate = true
+            button.title = "Dial"
+            button.imagePosition = .imageLeft
+            button.toolTip = "Mac Dial"
+        }
         
         accessibilityPermissionsGranted = AXIsProcessTrusted()
         launchAtLoginEnabled = LaunchAtLogin.isEnabled
@@ -692,19 +700,21 @@ class AppController: NSObject, NSMenuDelegate {
     }
     
     private func updateMenuBarItemImage(from: NSMenuItem?) {
-        guard let from else { return }
-        
-        // Copy image data, to not resize original icon shown in NSMenu dropdown
-        let selectedImage = NSImage(
-            cgImage: (
-                from.image?.cgImage(forProposedRect:nil, context:nil, hints:nil)
-                ?? NSImage(named: "menuicon-dial")?.cgImage(forProposedRect: nil, context: nil, hints: nil)
-            )!,
-            size: .init(width: 16, height: 16),
-        )
-        selectedImage.isTemplate = true
-        
-        statusItem.button?.image = selectedImage
+        statusItem.isVisible = true
+
+        let cgImage = from?.image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+            ?? NSImage(named: "menuicon-dial")?.cgImage(forProposedRect: nil, context: nil, hints: nil)
+
+        if let cgImage {
+            let selectedImage = NSImage(cgImage: cgImage, size: .init(width: 16, height: 16))
+            selectedImage.isTemplate = true
+            statusItem.button?.image = selectedImage
+        } else {
+            statusItem.button?.image = NSImage(named: "menuicon-dial")
+            statusItem.button?.image?.isTemplate = true
+        }
+
+        statusItem.button?.title = "Dial"
         statusItem.button?.imagePosition = .imageLeft
         
         updateMenuBarTooltip()
