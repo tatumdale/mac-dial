@@ -15,6 +15,17 @@ class ButtonMuteControl: DeviceControl {
     }
     
     private var startedPressingAt: TimeInterval = Date.timeIntervalSinceReferenceDate
+    private var pendingTap: DispatchWorkItem?
+
+    func buttonDoublePressed(_ dial: Dial) {
+        pendingTap?.cancel()
+        pendingTap = nil
+    }
+
+    func buttonPressRotated(_ dial: Dial) {
+        // A zero start time makes the release look like a long hold, which is discarded.
+        startedPressingAt = 0
+    }
 
     func buttonRelease(_ dial: Dial) {
         if ((Date.timeIntervalSinceReferenceDate - startedPressingAt) >= 0.35) {
@@ -23,7 +34,22 @@ class ButtonMuteControl: DeviceControl {
             return
         }
         startedPressingAt = 0
-        
+
+        guard dial.isDoublePressEnabled else {
+            toggleMute()
+            return
+        }
+
+        pendingTap?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            self?.pendingTap = nil
+            self?.toggleMute()
+        }
+        pendingTap = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + Dial.doublePressWindow + 0.03, execute: work)
+    }
+
+    private func toggleMute() {
         guard var isMuted = Sound.isMuted() else { return }
         isMuted = !isMuted
         

@@ -28,6 +28,8 @@ extension SettingsValueKey {
     static let showOSD: SettingsValueKey = "settings.isShowOSDEnabled"
     static let wheelDirection: SettingsValueKey = "settings.wheelDirection"
     static let statusIcon: SettingsValueKey = "settings.statusIcon"
+    static let pressRotationMode: SettingsValueKey = "settings.pressRotationMode"
+    static let doublePressMode: SettingsValueKey = "settings.doublePressMode"
 }
 
 class UserSettings {
@@ -158,6 +160,21 @@ class UserSettings {
     
     private typealias KeyScrollModifiersDict = [String: Bool]
     
+    /// What turning the Dial does while the button is held down.
+    enum PressRotationMode: Int {
+        /// Turning while pressed behaves like a normal turn.
+        case none             = 0
+        /// Turning while pressed scrolls left and right under the pointer.
+        case horizontalScroll = 1
+    }
+
+    /// What a double press does.
+    enum DoublePressMode: Int {
+        case none = 0
+        /// Toggles rotation between the chosen rotation mode and Control + scroll zoom.
+        case zoom = 1
+    }
+
     // MARK: - Default/fallback values
     private static let defaultkeyScrollModifiers: KeyScrollModifiersDict = [
         "shift":   false,
@@ -198,6 +215,12 @@ class UserSettings {
     @FromUserDefaults(key: .statusIcon, defaultValue: StatusIconMode.default.rawValue)
     static private var statusIconSetting: Int
     
+    @FromUserDefaults(key: .pressRotationMode, defaultValue: PressRotationMode.horizontalScroll.rawValue)
+    static private var pressRotationModeSetting: Int
+
+    @FromUserDefaults(key: .doublePressMode, defaultValue: DoublePressMode.zoom.rawValue)
+    static private var doublePressModeSetting: Int
+
     @FromUserDefaults(key: .keyScrollModifiers, defaultValue: defaultkeyScrollModifiers)
     static private var keyScrollModifiersSetting: KeyScrollModifiersDict
     
@@ -214,6 +237,16 @@ class UserSettings {
         set { UserSettings.buttonModeSetting = newValue.rawValue }
     }
     
+    static var pressRotationMode: PressRotationMode {
+        get { PressRotationMode(rawValue: UserSettings.pressRotationModeSetting) ?? .horizontalScroll }
+        set { UserSettings.pressRotationModeSetting = newValue.rawValue }
+    }
+
+    static var doublePressMode: DoublePressMode {
+        get { DoublePressMode(rawValue: UserSettings.doublePressModeSetting) ?? .zoom }
+        set { UserSettings.doublePressModeSetting = newValue.rawValue }
+    }
+
     static var multiMode: MultiOperationMode {
         get { MultiOperationMode(rawValue: UserSettings.multiModeSetting) ?? .none }
         set { UserSettings.multiModeSetting = newValue.rawValue }

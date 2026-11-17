@@ -89,6 +89,20 @@ class AppController: NSObject, NSMenuDelegate {
     
     // Dynamic menu items
     @objc dynamic private var accessibilityPermissionsGranted = false
+    private var menuInputMonitoringPermissions: NSMenuItem?
+    private var menuPressRotationMode: NSMenuItem!
+    private var menuPressRotationModeHorizontalScroll: NSMenuItem!
+    private var menuPressRotationModeNone: NSMenuItem!
+    private var menuDoublePressMode: NSMenuItem!
+    private var menuDoublePressModeZoom: NSMenuItem!
+    private var menuDoublePressModeNone: NSMenuItem!
+
+    /// Double press toggles this. Rotation then zooms with Control + scroll.
+    private var isZoomMode = false
+    private let zoomControl = RotationScrollControl(axis: .vertical, forcedFlags: .maskControl)
+
+    private let permissions = PermissionMonitor()
+    private var dialWatchdog: Timer?
     @objc dynamic private var launchAtLoginEnabled = false
     
     override init() {
@@ -102,12 +116,18 @@ class AppController: NSObject, NSMenuDelegate {
             button.toolTip = "Mac Dial"
         }
         
-        accessibilityPermissionsGranted = AXIsProcessTrusted()
+        accessibilityPermissionsGranted = permissions.state.accessibility
         launchAtLoginEnabled = LaunchAtLogin.isEnabled
         
         super.init()
 
         dial = Dial(connectionHandler: connected, disconnectionHandler: disconnected)
+
+        permissions.onChange = { [weak self] old, new in
+            self?.permissionsChanged(from: old, to: new)
+        }
+        permissions.start()
+        startDialWatchdog()
     }
     
     // Public
@@ -125,6 +145,7 @@ class AppController: NSObject, NSMenuDelegate {
         
         menuAccessibilityPermissions.title = NSLocalizedString("menu.accessibilityPermissions", comment: "")
         menuAccessibilityPermissions.toolTip = NSLocalizedString("menu.tooltip.accessibilityPermissions", comment: "")
+        installInputMonitoringItem()
         
         menuMultiControlMode.title = NSLocalizedString("menu.multiMode", comment: "")
         menuMultiControlModeColorPicker.title = NSLocalizedString("menu.multiMode.colorPicker", comment: "")
@@ -136,6 +157,8 @@ class AppController: NSObject, NSMenuDelegate {
         menuButtonControlModeMute.title = NSLocalizedString("menu.buttonMode.mute", comment: "")
         menuButtonControlModeNone.title = NSLocalizedString("menu.buttonMode.none", comment: "")
         installHandyButtonModeItem()
+        installPressRotationModeItems()
+        installDoublePressModeItems()
 
         menuRotationControlMode.title = NSLocalizedString("menu.rotationMode", comment: "")
         menuRotationControlModeVolume.title = NSLocalizedString("menu.rotationMode.volume", comment: "")
@@ -196,6 +219,8 @@ class AppController: NSObject, NSMenuDelegate {
         setRotationMode(mode: UserSettings.rotationMode)
         setButtonMode(mode: UserSettings.buttonMode)
         setMultiMode(mode: UserSettings.multiMode)
+        setPressRotationMode(mode: UserSettings.pressRotationMode)
+        setDoublePressMode(mode: UserSettings.doublePressMode)
         setSensitivity(sensitivity: UserSettings.sensitivity)
         setDirection(direction: UserSettings.wheelDirection)
         setHaptics(enabled: UserSettings.hapticsEnabled)
@@ -224,7 +249,8 @@ class AppController: NSObject, NSMenuDelegate {
         }
         
         // Update dynamic values with latest data
-        accessibilityPermissionsGranted = AXIsProcessTrusted()
+        permissions.refresh()
+        updatePermissionItems()
         launchAtLoginEnabled = LaunchAtLogin.isEnabled
     }
     
@@ -301,7 +327,8 @@ class AppController: NSObject, NSMenuDelegate {
                 break
         }
         
-        dial?.controls = (dialControl.map { [ $0 ] } ?? []) + (buttonControl.map { [ $0 ] } ?? [])
+        setZoomMode(false, announce: false)
+        applyControls()
         
         // Disable multi mode
         if UserSettings.rotationMode != .none {
@@ -343,7 +370,8 @@ class AppController: NSObject, NSMenuDelegate {
                 break
         }
         
-        dial?.controls = (dialControl.map { [ $0 ] } ?? []) + (buttonControl.map { [ $0 ] } ?? [])
+        applyControls()
+        updateDoublePressAction()
         
         // Disable multi mode
         if UserSettings.buttonMode != .none {
@@ -382,6 +410,8 @@ class AppController: NSObject, NSMenuDelegate {
             
             dial?.controls = multiControl.map { [ $0 ] } ?? []
         }
+        updatePressRotationControl()
+        updateDoublePressAction()
         
         updateMenuBarTooltip()
         
@@ -554,6 +584,103 @@ class AppController: NSObject, NSMenuDelegate {
         }
     }
     
+    public func setPressRotationMode(mode: UserSettings.PressRotationMode) {
+        UserSettings.pressRotationMode = mode
+        menuPressRotationMode?.deselectSubmenuItems()
+        switch mode {
+            case .horizontalScroll:
+                menuPressRotationModeHorizontalScroll?.state = .on
+                menuPressRotationMode?.image = menuPressRotationModeHorizontalScroll?.image
+            case .none:
+                menuPressRotationModeNone?.state = .on
+                menuPressRotationMode?.image = menuPressRotationModeNone?.image
+        }
+        updatePressRotationControl()
+    }
+
+    public func setDoublePressMode(mode: UserSettings.DoublePressMode) {
+        UserSettings.doublePressMode = mode
+        menuDoublePressMode?.deselectSubmenuItems()
+        let item = mode == .zoom ? menuDoublePressModeZoom : menuDoublePressModeNone
+        item?.state = .on
+        menuDoublePressMode?.image = item?.image
+        updateDoublePressAction()
+    }
+
+    private func applyControls() {
+        let rotation: DeviceControl? = isZoomMode ? zoomControl : dialControl
+        dial?.controls = (rotation.map { [ $0 ] } ?? []) + (buttonControl.map { [ $0 ] } ?? [])
+    }
+
+    /// Playback and Left Click use double clicks themselves, and multi mode owns the
+    /// button, so double press zoom only runs with Handy, Mute or no button mode.
+    private func updateDoublePressAction() {
+        let buttonModeAllowsIt = [.handy, .mute, .none].contains(UserSettings.buttonMode)
+        let isEnabled = UserSettings.doublePressMode == .zoom
+            && UserSettings.multiMode == .none
+            && buttonModeAllowsIt
+
+        menuDoublePressMode?.toolTip = buttonModeAllowsIt
+            ? NSLocalizedString("menu.tooltip.doublePressMode", value: "What a double press does", comment: "")
+            : NSLocalizedString("menu.tooltip.doublePressMode.unavailable", value: "Not available with this Button Mode, which uses double presses itself", comment: "")
+
+        if isEnabled {
+            dial?.doublePressAction = { [weak self] pressInterval in
+                guard let self else { return }
+                self.setZoomMode(!self.isZoomMode, announce: true, hapticInterval: pressInterval)
+            }
+        } else {
+            dial?.doublePressAction = nil
+            setZoomMode(false, announce: false)
+        }
+    }
+
+    private func setZoomMode(_ isOn: Bool, announce: Bool, hapticInterval: TimeInterval = 0.25) {
+        guard isOn != isZoomMode else { return }
+        isZoomMode = isOn
+        applyControls()
+        log(tag: "Zoom", isOn ? "zoom mode on" : "zoom mode off")
+
+        setStatusIcon(icon: UserSettings.statusIcon)
+
+        guard announce else { return }
+        dial?.sendDoubleClickHaptic(interval: hapticInterval)
+        if isOn {
+            ModeHUD.show(symbol: "plus.magnifyingglass", text: NSLocalizedString("hud.zoom", value: "Zoom", comment: ""))
+        } else {
+            ModeHUD.show(
+                symbol: selectedRotationModeSymbol,
+                text: selectedRotationModeItem?.title ?? NSLocalizedString("hud.rotation", value: "Rotation", comment: "")
+            )
+        }
+    }
+
+    private var selectedRotationModeSymbol: String {
+        switch UserSettings.rotationMode {
+            case .scrolling: return "arrow.up.and.down"
+            case .volume, .appleMusicVolume, .spotifyVolume, .vlcVolume: return "speaker.wave.2.fill"
+            case .brightness: return "sun.max.fill"
+            case .keyboard: return "light.max"
+            default: return "dial.medium"
+        }
+    }
+
+    /// Multi mode (the color picker) uses press and turn itself, so it gets no press rotation.
+    private func updatePressRotationControl() {
+        guard UserSettings.multiMode == .none else {
+            dial?.pressRotationControl = nil
+            return
+        }
+        switch UserSettings.pressRotationMode {
+            case .horizontalScroll:
+                if !(dial?.pressRotationControl is RotationScrollControl) {
+                    dial?.pressRotationControl = RotationScrollControl(axis: .horizontal)
+                }
+            case .none:
+                dial?.pressRotationControl = nil
+        }
+    }
+
     public func setMultiMode(mode: UserSettings.MultiOperationMode) {
         switch mode {
             case .none:
@@ -661,6 +788,158 @@ class AppController: NSObject, NSMenuDelegate {
     
     // MARK: - Helper
 
+    private func installPressRotationModeItems() {
+        let parent = NSMenuItem(
+            title: NSLocalizedString("menu.pressRotationMode", value: "Press + Turn", comment: ""),
+            action: nil,
+            keyEquivalent: ""
+        )
+        parent.toolTip = NSLocalizedString(
+            "menu.tooltip.pressRotationMode",
+            value: "What turning the Dial does while you hold the button down",
+            comment: ""
+        )
+
+        let submenu = NSMenu()
+        func addItem(_ key: String, _ title: String, _ symbol: String) -> NSMenuItem {
+            let item = NSMenuItem(
+                title: NSLocalizedString(key, value: title, comment: ""),
+                action: #selector(pressRotationModeSelect(item:)),
+                keyEquivalent: ""
+            )
+            item.target = self
+            item.identifier = NSUserInterfaceItemIdentifier(key)
+            if #available(macOS 11.0, *) {
+                item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: title)
+                item.image?.isTemplate = true
+            }
+            submenu.addItem(item)
+            return item
+        }
+        menuPressRotationModeHorizontalScroll = addItem("menu.pressRotationMode.horizontalScroll", "Scroll Left/Right", "arrow.left.and.right")
+        menuPressRotationModeNone = addItem("menu.pressRotationMode.none", "Same as Rotation", "nosign")
+        parent.submenu = submenu
+        menuPressRotationMode = parent
+
+        if let index = statusMenu.items.firstIndex(of: menuButtonControlMode) {
+            statusMenu.insertItem(parent, at: index + 1)
+        } else {
+            statusMenu.addItem(parent)
+        }
+    }
+
+    @objc
+    private func pressRotationModeSelect(item: NSMenuItem) {
+        switch item.identifier {
+            case menuPressRotationModeHorizontalScroll.identifier:
+                setPressRotationMode(mode: .horizontalScroll)
+            default:
+                setPressRotationMode(mode: .none)
+        }
+    }
+
+    private func installDoublePressModeItems() {
+        let parent = NSMenuItem(
+            title: NSLocalizedString("menu.doublePressMode", value: "Double Press", comment: ""),
+            action: nil,
+            keyEquivalent: ""
+        )
+        let submenu = NSMenu()
+        func addItem(_ key: String, _ title: String, _ symbol: String) -> NSMenuItem {
+            let item = NSMenuItem(
+                title: NSLocalizedString(key, value: title, comment: ""),
+                action: #selector(doublePressModeSelect(item:)),
+                keyEquivalent: ""
+            )
+            item.target = self
+            item.identifier = NSUserInterfaceItemIdentifier(key)
+            item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: title)
+            item.image?.isTemplate = true
+            submenu.addItem(item)
+            return item
+        }
+        menuDoublePressModeZoom = addItem("menu.doublePressMode.zoom", "Toggle Zoom (Control + Scroll)", "plus.magnifyingglass")
+        menuDoublePressModeNone = addItem("menu.doublePressMode.none", "None", "nosign")
+        parent.submenu = submenu
+        menuDoublePressMode = parent
+
+        if let index = statusMenu.items.firstIndex(of: menuPressRotationMode) {
+            statusMenu.insertItem(parent, at: index + 1)
+        } else {
+            statusMenu.addItem(parent)
+        }
+    }
+
+    @objc
+    private func doublePressModeSelect(item: NSMenuItem) {
+        setDoublePressMode(mode: item.identifier == menuDoublePressModeZoom.identifier ? .zoom : .none)
+    }
+
+    private func installInputMonitoringItem() {
+        let item = NSMenuItem(
+            title: NSLocalizedString("menu.inputMonitoringPermissions", value: "Needs Input Monitoring permission!", comment: ""),
+            action: #selector(inputMonitoringPermissionsSelect(item:)),
+            keyEquivalent: ""
+        )
+        item.target = self
+        item.toolTip = NSLocalizedString(
+            "menu.tooltip.inputMonitoringPermissions",
+            value: "Mac Dial needs Input Monitoring to read the Surface Dial. Click to open Privacy & Security settings.",
+            comment: ""
+        )
+        menuInputMonitoringPermissions = item
+
+        if let index = statusMenu.items.firstIndex(of: menuAccessibilityPermissions) {
+            statusMenu.insertItem(item, at: index + 1)
+        } else {
+            statusMenu.insertItem(item, at: 0)
+        }
+        updatePermissionItems()
+    }
+
+    @objc
+    private func inputMonitoringPermissionsSelect(item: NSMenuItem) {
+        if !PermissionMonitor.requestInputMonitoring() {
+            PermissionMonitor.openInputMonitoringSettings()
+        }
+    }
+
+    private func updatePermissionItems() {
+        let state = permissions.state
+        if accessibilityPermissionsGranted != state.accessibility {
+            accessibilityPermissionsGranted = state.accessibility
+        }
+        menuInputMonitoringPermissions?.isHidden = state.inputMonitoring
+    }
+
+    private func permissionsChanged(from old: PermissionMonitor.State, to new: PermissionMonitor.State) {
+        updatePermissionItems()
+
+        // A HID manager opened without Input Monitoring stays blind after the grant.
+        if new.inputMonitoring && !old.inputMonitoring {
+            restartDial(reason: "input monitoring granted")
+        }
+    }
+
+    /// Restarts the HID manager every 20 s while no Dial is open and Input Monitoring is
+    /// granted. This recovers from a failed open without the user toggling settings.
+    private func startDialWatchdog() {
+        let timer = Timer(timeInterval: 20, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            MainActor.assumeIsolated {
+                guard self.permissions.state.inputMonitoring, self.dial?.isConnected == false else { return }
+                self.restartDial(reason: "no dial open")
+            }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        dialWatchdog = timer
+    }
+
+    private func restartDial(reason: String) {
+        log(tag: "Dial", "restarting HID manager: \(reason)")
+        dial?.restart()
+    }
+
     private func installHandyButtonModeItem() {
         let item = NSMenuItem(
             title: NSLocalizedString("menu.buttonMode.handy", comment: "Handy"),
@@ -702,6 +981,16 @@ class AppController: NSObject, NSMenuDelegate {
     private func updateMenuBarItemImage(from: NSMenuItem?) {
         statusItem.isVisible = true
 
+        if isZoomMode {
+            let image = NSImage(systemSymbolName: "plus.magnifyingglass", accessibilityDescription: "Zoom")
+            image?.isTemplate = true
+            statusItem.button?.image = image
+            statusItem.button?.title = NSLocalizedString("menuBar.zoom", value: "Zoom", comment: "")
+            statusItem.button?.imagePosition = .imageLeft
+            statusItem.button?.toolTip = NSLocalizedString("menuBar.tooltip.zoom", value: "Zoom mode: turning sends Control + scroll. Double press to leave.", comment: "")
+            return
+        }
+
         let cgImage = from?.image?.cgImage(forProposedRect: nil, context: nil, hints: nil)
             ?? NSImage(named: "menuicon-dial")?.cgImage(forProposedRect: nil, context: nil, hints: nil)
 
@@ -729,6 +1018,7 @@ class AppController: NSObject, NSMenuDelegate {
     // MARK: - Lifecycle
     
     func terminate() {
+        dialWatchdog?.invalidate()
         dial = nil
     }
 
@@ -767,9 +1057,17 @@ class AppController: NSObject, NSMenuDelegate {
             alert.runModal()
         }
         
-        let options : NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
-        
-        AXIsProcessTrustedWithOptions(options)
+        if !AXIsProcessTrusted() {
+            let options : NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
+            AXIsProcessTrustedWithOptions(options)
+        }
+
+        if !PermissionMonitor.isInputMonitoringGranted() {
+            PermissionMonitor.requestInputMonitoring()
+        }
+
+        permissions.refresh()
+        updatePermissionItems()
     }
 }
 
