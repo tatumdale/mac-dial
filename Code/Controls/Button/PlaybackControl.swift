@@ -23,6 +23,11 @@ class ButtonPlaybackControl: DeviceControl {
     private var numberOfClicks: Int = 0
     private var startedPressingAt: TimeInterval = Date.timeIntervalSinceReferenceDate
 
+    func buttonPressRotated(_ dial: Dial) {
+        // A zero start time makes the release look like a long hold, which is discarded.
+        startedPressingAt = 0
+    }
+
     func buttonRelease(_ dial: Dial) {
         if ((Date.timeIntervalSinceReferenceDate - startedPressingAt) >= 0.35) {
             log(tag: "Media", "button held for extended period, discarding input")

@@ -15,6 +15,10 @@ Native macOS **menu-bar** app that owns the Microsoft Surface Dial (IOKit, vendo
 
 Menu item label is **Handy**; icon is SF Symbol `hand.raised.fill`.
 
+**Press + Turn** (default Scroll Left/Right): turning while the button is held sends horizontal scroll events to whatever is under the pointer. Clockwise scrolls right. The first detent cancels the press: Handy stops listening if this hold started it, and the release does nothing. Mute and Playback discard the release the same way. `Dial.pressRotationControl` routes these turns, and stationary (0) reports never trigger it, because the Dial sends them constantly while touched. Set the submenu to Same as Rotation for the old behaviour. Multi mode (color picker) turns it off.
+
+**Double Press** (default Toggle Zoom): two short presses with at most 300 ms between the first release and the second press switch rotation to zoom mode, which sends vertical scroll with Control held (pen.dev's zoom). Double press again to go back. Each switch plays two short haptic clicks spaced like the two presses (clamped to 0.08 to 0.5 s), shows a badge (`Code/Presentation/Views/ModeHUD.swift`) and changes the menu bar item to a magnifier titled **Zoom**. `Dial.doublePressAction` swallows the second press. While it is set, Handy and Mute wait 330 ms after a short press before acting, so a double press can cancel them. Double press is off in Playback and Left Click modes, which use double clicks themselves, and in multi mode. Picking a rotation mode in the menu leaves zoom mode. Zoom uses Control, not Command, because macOS screen zoom (Accessibility, "Use scroll gesture with modifier keys to zoom") is often bound to Command + scroll.
+
 ## Prerequisites
 
 - macOS 10.13+ (developed against macOS 26 / Apple Silicon; ad-hoc sign to run locally)
@@ -26,15 +30,17 @@ Do not compile Handy from this workspace. The official bundle id is `com.pais.ha
 
 ## Build and run
 
-From this repository root. Install local builds to `/Applications` (Finder’s Applications folder):
+From this repository root:
 
 ```bash
-xcodebuild -scheme MacDial -configuration Release \
-  -derivedDataPath build -destination 'platform=macOS' \
-  CODE_SIGN_IDENTITY="-" CODE_SIGNING_REQUIRED=NO DEVELOPMENT_TEAM=
-ditto "build/Build/Products/Release/MacDial.app" "/Applications/MacDial.app"
-open "/Applications/MacDial.app"
+scripts/install-local.sh
 ```
+
+The script builds Release, re-signs the app with the first Apple Development certificate in the keychain, quits the running copy, installs to `/Applications/MacDial.app` and opens it. Set `MACDIAL_SIGN_IDENTITY` to pick a different certificate.
+
+Do not install an ad-hoc signed build. macOS ties privacy grants to the designated requirement, and an ad-hoc requirement is the cdhash, which changes on every build. System Settings then shows the switch as on while `AXIsProcessTrusted()` returns false and the Dial stays closed. The certificate-based requirement survives rebuilds.
+
+The deployment target is macOS 12.0, the lowest the current Xcode accepts.
 
 `Code/` is an Xcode synchronized root — new Swift files under `Code/` are picked up automatically.
 
@@ -42,9 +48,13 @@ Quit any other Mac Dial first (including `~/Applications/MacDial.app`). Two copi
 
 ## Permissions
 
-- **Mac Dial → Accessibility** (key-event fallback and some click modes)
+- **Mac Dial → Input Monitoring** (reading the Dial through IOKit). Without it `IOHIDManagerOpen` or `IOHIDDeviceOpen` fails and the menu shows "Needs Input Monitoring permission!".
+- **Mac Dial → Accessibility** (key, scroll and click events, and the Option+Space fallback)
 - **Handy → Microphone** and **Accessibility** (Handy button mode)
-- After an ad-hoc rebuild, macOS may keep a stale Accessibility row. Quit Mac Dial, remove the old entry, reopen, and grant again.
+
+`Code/Utils/Permissions.swift` polls both Mac Dial permissions every 2 seconds and on the `com.apple.accessibility.api` notification. When Input Monitoring arrives, `AppController` restarts the HID manager, so no relaunch or settings toggle is needed. A watchdog also restarts it every 20 seconds while no Dial is open.
+
+If a grant looks stuck after switching from an ad-hoc build, run `scripts/install-local.sh --reset-permissions`, then turn both switches on again.
 
 ## Pairing the Dial
 
@@ -73,6 +83,8 @@ Resources/Localizable.xcstrings        # menu.buttonMode.handy = "Handy"
 ```
 
 Default `settings.buttonMode` is Handy (`4`).
+
+Rotation handling lives in `Code/Dial/Device.swift`. Haptic writes run on a background queue and a tap is dropped while the previous one is in flight, because each write is a synchronous Bluetooth report that blocked the main run loop and delayed rotation. Rotation reports larger than ±1 are replayed as single steps, capped at 10.
 
 The status item is created in `AppController.init` (`isVisible`, dial image, title **Dial**) so the menu bar extra is present even before the storyboard finishes loading.
 

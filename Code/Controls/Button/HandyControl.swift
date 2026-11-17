@@ -3,7 +3,10 @@
 //  MacDial
 //
 //  Press toggles Handy listening. Press-and-hold starts listening;
-//  release stops it.
+//  release stops it. Turning while pressed cancels the press: it stops
+//  listening that this hold started, and the release then does nothing.
+//  While double press is on, a short press toggles after the double-press
+//  window, and a double press cancels it.
 //
 
 import AppKit
@@ -14,6 +17,9 @@ class ButtonHandyControl: DeviceControl {
     private var isPressed = false
     private var isLongPress = false
     private var listening = false
+    private var isPressRotated = false
+    private var holdStartedListening = false
+    private var pendingTap: DispatchWorkItem?
     private var holdTimer: DispatchWorkItem?
 
     func buttonPress(_ dial: Dial) {
@@ -23,8 +29,22 @@ class ButtonHandyControl: DeviceControl {
     }
 
     func buttonRelease(_ dial: Dial) {
+        let deferTap = dial.isDoublePressEnabled
         DispatchQueue.main.async { [weak self] in
-            self?.handleRelease()
+            self?.handleRelease(deferTap: deferTap)
+        }
+    }
+
+    func buttonDoublePressed(_ dial: Dial) {
+        // Runs on the main thread, before the pending tap can fire.
+        pendingTap?.cancel()
+        pendingTap = nil
+        log(tag: "Handy", "double press, single press cancelled")
+    }
+
+    func buttonPressRotated(_ dial: Dial) {
+        DispatchQueue.main.async { [weak self] in
+            self?.handlePressRotated()
         }
     }
 
@@ -35,6 +55,8 @@ class ButtonHandyControl: DeviceControl {
     private func handlePress() {
         isPressed = true
         isLongPress = false
+        isPressRotated = false
+        holdStartedListening = false
         pressStartedAt = Date.timeIntervalSinceReferenceDate
 
         let work = DispatchWorkItem { [weak self] in
@@ -42,16 +64,38 @@ class ButtonHandyControl: DeviceControl {
             self.isLongPress = true
             if !self.listening {
                 self.setListening(true)
+                self.holdStartedListening = true
             }
         }
         holdTimer = work
         DispatchQueue.main.asyncAfter(deadline: .now() + holdThreshold, execute: work)
     }
 
-    private func handleRelease() {
+    private func handlePressRotated() {
+        guard isPressed, !isPressRotated else { return }
+        isPressRotated = true
+
+        holdTimer?.cancel()
+        holdTimer = nil
+
+        // Only stop listening that this hold started. Listening that an earlier short
+        // press turned on keeps going.
+        if holdStartedListening && listening {
+            setListening(false)
+        }
+        holdStartedListening = false
+        isLongPress = false
+    }
+
+    private func handleRelease(deferTap: Bool) {
         holdTimer?.cancel()
         holdTimer = nil
         isPressed = false
+
+        if isPressRotated {
+            isPressRotated = false
+            return
+        }
 
         if isLongPress {
             if listening {
@@ -61,7 +105,21 @@ class ButtonHandyControl: DeviceControl {
             return
         }
 
-        setListening(!listening)
+        guard deferTap else {
+            setListening(!listening)
+            return
+        }
+
+        pendingTap?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.pendingTap = nil
+            self.setListening(!self.listening)
+        }
+        pendingTap = work
+        // A little longer than the window, so a second press that lands right at the
+        // edge still cancels this.
+        DispatchQueue.main.asyncAfter(deadline: .now() + Dial.doublePressWindow + 0.03, execute: work)
     }
 
     private func setListening(_ on: Bool) {

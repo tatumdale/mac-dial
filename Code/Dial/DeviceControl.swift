@@ -49,6 +49,21 @@ enum RotationState: Equatable {
 protocol DeviceControl: AnyObject {
     func buttonPress(_ dial: Dial)
     func buttonRelease(_ dial: Dial)
+
+    /// Called once per press, on the first turn while the button is held, when a
+    /// press-rotation control is set. The press is now a press-and-turn gesture, so the
+    /// control should cancel its own press or hold action. `buttonRelease` still follows.
+    func buttonPressRotated(_ dial: Dial)
+
+    /// Called on the second press of a double press, when `Dial.doublePressAction` is set.
+    /// The Dial swallows that second press and its release. A control that deferred its
+    /// single-press action should cancel it here. Called on the main thread.
+    func buttonDoublePressed(_ dial: Dial)
     
     func rotationChanged(_ dial: Dial, _ rotation: RotationState) -> Bool
+}
+
+extension DeviceControl {
+    func buttonPressRotated(_ dial: Dial) {}
+    func buttonDoublePressed(_ dial: Dial) {}
 }

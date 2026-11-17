@@ -38,7 +38,11 @@ public enum Sound {
     }
 
     public static func setVolume(_ volume: Float) {
-        mute(false)
+        // Writing the mute property on every dial tick costs a CoreAudio round trip
+        // and posts a change notification, so only unmute when the output is muted.
+        if isMuted() == true {
+            mute(false)
+        }
 
         // Change output volume
         do {
